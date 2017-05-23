@@ -1,0 +1,35 @@
+<script type="text/template" id="videoText">
+<div style="background: url(<%= img %>); background-repeat: no-repeat;" class="video-block">
+    <div><object type="application/x-shockwave-flash" id="AMplayer" name="AMplayer" align="middle" data=<%= video %>
+        width=<%= width %> height=<%= height %>>
+        <param name="quality" value="high">
+        <param name="bgcolor" value="#FFFFFF">
+        <param name="allowscriptaccess" value="sameDomain">
+        <param name="allowfullscreen" value="true">
+        <param name="wmode" value="opaque">
+        <param name="flashvars" value=<%= playlist %>
+        >
+    </object></div>
+</div>
+    <div><%= text %> </div>
+
+</script>
+
+
+<script type="text/template" id="charBlock">
+   <div class ="square">
+       <div class="round">
+           <img src="<%= charImg %>" alt="">
+       </div>
+       <div class="charText"> <%= charText %></div>
+   </div>
+
+</script>
+<script type="text/template" id="contacts">
+   <div class="post">
+       <img src="img/post.png" alt="">
+       <a class="text" href="mailto:panora-video@gmail.com">panora-video@gmail.com</a>
+   </div>
+
+
+</script>

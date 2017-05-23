@@ -1,0 +1,135 @@
+body {
+    padding-top: 20px;
+}
+
+#content {
+    overflow: auto;
+}
+
+.app {
+    width: 67%;
+    margin: auto;
+}
+body>.container-fluid{
+    padding: 0px;
+}
+
+@media (max-width: 1366px){
+    .app {
+        width: 85%;
+    }
+    .app #navbar {
+        margin-left: 150px !important;
+        padding: 0px !important;
+    }
+}
+@media (max-width: 1024px){
+    .app {
+        width: 90%;
+    }
+    .app #navbar {
+        margin-left: 120px !important;
+    }
+    .app #navbar li {
+        width: 140px !important;
+
+    }
+}
+.video-block {
+    height: 560px;
+    display: flex;
+    margin: auto;
+}
+
+.video-block div {
+    margin: auto;
+}
+
+.app .navbar-default {
+    background-image: none;
+    border: none;
+    background-color: #ffffff;
+    box-shadow: none;
+}
+
+.app .navbar-brand {
+    padding: 0;
+}
+
+.app #navbar {
+    margin-left: 280px;
+}
+
+.app #navbar li {
+    width: 160px !important;
+    color: #6c6c6c !important;
+    font-size: 16px;
+    text-align: center;
+}
+
+.app #navbar li:hover {
+    color: #000000 !important;
+    background-color: #ebebeb;
+    border-radius: 5px;
+}
+
+#footer {
+    margin: 85px auto;
+    text-align: center;
+    color: #4b4b4b;
+}
+
+.square {
+    float: left;
+    width: 370px;
+    height: 240px;
+    border: 1px solid;
+    border-color: #888888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    margin: 5px;
+}
+
+.round {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    background-color: #888888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.charText {
+    padding: 5px;
+    color: #888888;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.post {
+    margin: 305px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.text {
+    margin-top: 15px;
+    display: block;
+    color: #888888;
+    text-align: center;
+    border-bottom: solid 1px;
+    border-bottom-color: #777777;
+}
+
+.post img {
+    display: block;
+}
+.text:hover{
+    text-decoration: none;
+}
