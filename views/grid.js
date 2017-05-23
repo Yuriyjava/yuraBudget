@@ -3,38 +3,47 @@ define( function () {
     return function () {
 
         var self   = this;
+
+       var dataBudget={
+           MonthToPay   : "",
+           SumToPay : 800,
+           SumUAH  : "",
+           ExchangeRate     : "",
+           DateUAHPay     : "",
+           SumUSD : "",
+           DateUSDPay   :""
+       };
+
         var dataGrid = new kendo.data.DataSource({
             data     : dataBudget,
             autoSync : false,
+
             schema   : {
                 model : {
-                    id     : "FieldId",
+                    id     : "MonthToPay",
                     fields : {
-                        FieldId    : {
-                            validation : {
-                                required : true
-                            }
+                        MonthToPay   : {
+
+                            type:"date"
                         },
-                        FieldName  : {
-                            validation : {
-                                required : true
-                            }
+                        SumToPay : {
+
+                            type:"number"
                         },
-                        FieldType  : {
-                            validation : {
-                                required : true
-                            }
+                        SumUAH  : {
+                            type:"number"
                         },
-                        Prefix     : {
-                            validation : {
-                                required : true
-                            }
+                        ExchangeRate     : {
+                            type:"number"
                         },
-                        Fixed      : {
-                            type : "boolean"
+                        DateUAHPay     : {
+                            type:"date"
                         },
-                        Properties : {
-                            defaultValue : {}
+                        SumUSD : {
+                            type:"number"
+                        },
+                        DateUSDPay     : {
+                            type:"date"
                         }
                     }
                 }
@@ -51,44 +60,42 @@ define( function () {
                 var gridEl = $("<div></div>");
 
                this.grid = gridEl.kendoGrid({
-
+                   toolbar: ["create"],
+                   editable: "inline",
                    columns : [
                        {
-                           field      : "FieldId",
-                           title      : "Field Id",
-                           filterable : {
-                               mode : "row"
-                           }
+                           field      : "MonthToPay",
+                           title      : "Месяц оплаты"
+
+
                        },
 
                        {
-                           field : "FieldName",
-                           title : "Field Name"
+                           field : "SumToPay",
+                           title : "Сумма к оплате"
 
                        },
                        {
-                           field : "FieldType",
-                           title : "Field Type"
+                           field : "SumUAH",
+                           title : "Сумма гривен"
                        },
                        {
-                           field      : "Prefix",
-                           title      : "Prefix",
-                           filterable : {
-                               cell : {
-                                   template      : function (elem) {
-                                       prefixFilter(elem, prefixArr)
-                                   },
-                                   showOperators : false
-                               }
-                           }
+                           field      : "ExchangeRate",
+                           title      : "Курс"
+
                        },
                        {
-                           field : "Fixed",
-                           title : "Fixed"
+                           field : "DateUAHPay",
+                           title : "Дата получения UAH"
                        },
                        {
-                           field  : "Properties",
-                           hidden : true
+                           field  : "SumUSD",
+                           title : "Сумма USD"
+
+                       },
+                       {
+                           field  : "DateUSDPay",
+                           title : "Дата получения USD"
 
                        },
                        {
@@ -96,46 +103,9 @@ define( function () {
                        }],
 
                    dataSource : dataGrid,
-                   scrollable : true,
-                   selectable : true,
-                   filterable : {
-                       mode : "row"
-                   },
-                   toolbar    : "<span><b>Shema & Custom & System</b></br><a class='k-button k-button-icontext k-grid-add' href='\\#'>addNew</a></span>",
-                   editable   : {
-                       mode : "popup"
 
-                   },
-                   height     : 600,
-                   edit       : function (e) {
+                   height     : 600
 
-                       e.model.bind("change", function (data) {
-
-                           data.field === "FieldType" && bind();
-
-                       });
-
-                       var bind = function () {
-
-                           e.container.html(generateTemplate(e.model, e.model.isNew(), baseFields, baseProperties, fieldTypeList));
-                           e.container.css("min-width", "400px");
-                           $(e.container).find("#propertiesEdit").off();
-                           $(e.container).find("#propertiesEdit").on("click", function (event) {
-                               var $t        = $(event.target),
-                                   arrButton = $t.closest(".arrayButton"),
-                                   arrField  = arrButton.length && arrButton.attr("data-field");
-
-                               if (arrButton.length) {
-                                   e.model.Properties[arrField] ? e.model.Properties[arrField] : e.model.Properties[arrField]=[];
-                                   e.model.Properties[arrField]=propsPopup(e.model.Properties[arrField]);
-                               }
-                           });
-                           kendo.unbind(e.container, e.model);
-                           kendo.bind(e.container, e.model);
-
-                       };
-                       bind();
-                   },
 
 
                }).data("kendoGrid");
@@ -145,7 +115,7 @@ define( function () {
             render     : function () {
 
                 this.$el.html(this.grid.element);
-                this.grid.render();
+
             }
 
         });
