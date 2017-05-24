@@ -4,46 +4,52 @@ define( function () {
 
         var self   = this;
 
-       var dataBudget={
+       var dataBudget=[
+           {
+           id: 2215,
            MonthToPay   : "",
            SumToPay : 800,
            SumUAH  : "",
            ExchangeRate     : "",
            DateUAHPay     : "",
            SumUSD : "",
-           DateUSDPay   :""
-       };
-
+           DateUSDPay   :""}
+           ];
+kendo.culture("ru-RU")
         var dataGrid = new kendo.data.DataSource({
             data     : dataBudget,
             autoSync : false,
 
             schema   : {
                 model : {
-                    id     : "MonthToPay",
+                    id     : "id",
                     fields : {
+                        id   : {
+
+
+                        },
                         MonthToPay   : {
 
-                            type:"date"
+
                         },
                         SumToPay : {
 
-                            type:"number"
+
                         },
                         SumUAH  : {
-                            type:"number"
+
                         },
                         ExchangeRate     : {
-                            type:"number"
+
                         },
                         DateUAHPay     : {
-                            type:"date"
+
                         },
                         SumUSD : {
-                            type:"number"
+
                         },
                         DateUSDPay     : {
-                            type:"date"
+
                         }
                     }
                 }
@@ -57,70 +63,102 @@ define( function () {
             el         : "#content",
 
             initialize : function () {
-                var gridEl = $("<div></div>");
 
-               this.grid = gridEl.kendoGrid({
-                   toolbar: ["create"],
-                   editable: "inline",
-                   columns : [
-                       {
-                           field      : "MonthToPay",
-                           title      : "Месяц оплаты"
-
-
-                       },
-
-                       {
-                           field : "SumToPay",
-                           title : "Сумма к оплате"
-
-                       },
-                       {
-                           field : "SumUAH",
-                           title : "Сумма гривен"
-                       },
-                       {
-                           field      : "ExchangeRate",
-                           title      : "Курс"
-
-                       },
-                       {
-                           field : "DateUAHPay",
-                           title : "Дата получения UAH"
-                       },
-                       {
-                           field  : "SumUSD",
-                           title : "Сумма USD"
-
-                       },
-                       {
-                           field  : "DateUSDPay",
-                           title : "Дата получения USD"
-
-                       },
-                       {
-                           command : ["edit", "destroy"]
-                       }],
-
-                   dataSource : dataGrid,
-
-                   height     : 600
-
-
-
-               }).data("kendoGrid");
 
                 this.render();
             },
             render     : function () {
+                var gridEl = $("<div></div>");
+                this.$el.html(gridEl);
 
-                this.$el.html(this.grid.element);
+                this.grid = gridEl.kendoGrid({
+                    toolbar: ["create"],
+
+                    columns : [
+                        {
+                            field      : "id",
+                            hidden: true
+                        },
+                        {
+                            field      : "MonthToPay",
+                            title      : "Месяц оплаты",
+                            editor: dateEditor,
+                            format: "{0: MMMM-yyyy}",
+
+
+                        },
+
+                        {
+                            field : "SumToPay",
+                            title : "Сумма к оплате"
+
+                        },
+                        {
+                            field : "SumUAH",
+                            title : "Сумма гривен"
+                        },
+                        {
+                            field      : "ExchangeRate",
+                            title      : "Курс"
+
+                        },
+                        {
+                            field : "DateUAHPay",
+                            title : "Дата получения UAH",
+                            editor: dateEditor,
+                            format: "{0: dd-MMMM-yyyy}",
+
+                        },
+                        {
+                            field  : "SumUSD",
+                            title : "Сумма USD"
+
+                        },
+                        {
+                            field  : "DateUSDPay",
+                            title : "Дата получения USD",
+                            editor: dateEditor,
+                            format: "{0: dd-MMMM-yyyy}",
+
+
+                        },
+                        {
+                            command : ["destroy"]
+                        }],
+                    editable: true,
+                    dataSource : dataGrid,
+
+                    height     : 600
+
+
+
+                }).data("kendoGrid");
 
             }
 
         });
         self.view = new View();
 
+        function dateEditor(container, options){
+            var input = $("<input/>");
+            // set its name to the field to which the column is bound ('name' in this case)
+            input.attr("name", options.field);
+            // append it to the container
+            input.appendTo(container);
+           input.kendoDatePicker({
+                depth: options.field=="MonthToPay" ? "year": "day",
+                start:  options.field=="MonthToPay" ?"year":"day",
+                format: options.field=="MonthToPay" ? "MMMM yyyy":"dd/MMMM/yy",
+                min: new Date(2011, 0, 1),
+                dateInput: true,
+                change: function() {
+                    var value = this.value();
+                    console.log(value); //value is the selected date in the datepicker
+
+                }
+            }).data("kendoDatePicker");
+
+        }
     }
 
 

@@ -7,6 +7,11 @@ require([
     var div       = document.createElement('div');
     div.innerHTML = Templates;
     document.body.appendChild(div);
+
+    console.log(kendo.format("{0:c}", 99)); // outputs "$99.00" using the default en-US culture
+    kendo.culture("ru-RU"); // change the culture
+    console.log(kendo.format("{0:c}", 99)); // outputs "£99.00"
+
     // views, layouts
 var GridView= new Grid();
     var MyRouter= Backbone.Router.extend({
