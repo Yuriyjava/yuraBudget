@@ -1,56 +1,55 @@
-define( function () {
+define(function () {
 
     return function () {
 
-        var self   = this;
+        var self = this;
 
-       var dataBudget=[
-           {
-           id: 2215,
-           MonthToPay   : "",
-           SumToPay : 800,
-           SumUAH  : "",
-           ExchangeRate     : "",
-           DateUAHPay     : "",
-           SumUSD : "",
-           DateUSDPay   :""}
-           ];
-kendo.culture("ru-RU")
+        var dataBudget = [
+            {
+                id           : 2215,
+                MonthToPay   : "",
+                SumToPay     : 800,
+                SumUAH       : "",
+                ExchangeRate : "",
+                DateUAHPay   : "",
+                SumUSD       : "",
+                DateUSDPay   : ""
+            }
+        ];
+        kendo.culture("ru-RU")
         var dataGrid = new kendo.data.DataSource({
             data     : dataBudget,
             autoSync : false,
+            change   : function (e) {
+                if (e.action == "itemchange" && e.field == "SumToPay") {
+                    var item = e.items[0].toJSON();
 
+                    item.SumUSD = Math.floor((item.SumToPay / 3) / 100) * 100;
+                    item.SumUAH = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : item.SumToPay - item.SumUSD;
+                    this.pushUpdate(item);
+                    this.fetch();
+                }
+
+
+
+            },
             schema   : {
                 model : {
                     id     : "id",
                     fields : {
-                        id   : {
-
-
-                        },
-                        MonthToPay   : {
-
+                        id           : {
+                            defaultValue : function () {
+                                return kendo.guid();
+                            }
 
                         },
-                        SumToPay : {
-
-
-                        },
-                        SumUAH  : {
-
-                        },
-                        ExchangeRate     : {
-
-                        },
-                        DateUAHPay     : {
-
-                        },
-                        SumUSD : {
-
-                        },
-                        DateUSDPay     : {
-
-                        }
+                        MonthToPay   : {},
+                        SumToPay     : {},
+                        SumUAH       : {},
+                        ExchangeRate : {},
+                        DateUAHPay   : {},
+                        SumUSD       : {},
+                        DateUSDPay   : {}
                     }
                 }
             }
@@ -60,7 +59,7 @@ kendo.culture("ru-RU")
 
 
         var View  = Backbone.View.extend({
-            el         : "#content",
+            el : "#content",
 
             initialize : function () {
 
@@ -72,18 +71,18 @@ kendo.culture("ru-RU")
                 this.$el.html(gridEl);
 
                 this.grid = gridEl.kendoGrid({
-                    toolbar: ["create"],
+                    toolbar : ["create"],
 
-                    columns : [
+                    columns    : [
                         {
-                            field      : "id",
-                            hidden: true
+                            field  : "id",
+                            hidden : true
                         },
                         {
-                            field      : "MonthToPay",
-                            title      : "Месяц оплаты",
-                            editor: dateEditor,
-                            format: "{0: MMMM-yyyy}",
+                            field  : "MonthToPay",
+                            title  : "Месяц оплаты",
+                            editor : dateEditor,
+                            format : "{0: MMMM-yyyy}",
 
 
                         },
@@ -98,38 +97,37 @@ kendo.culture("ru-RU")
                             title : "Сумма гривен"
                         },
                         {
-                            field      : "ExchangeRate",
-                            title      : "Курс"
+                            field : "ExchangeRate",
+                            title : "Курс"
 
                         },
                         {
-                            field : "DateUAHPay",
-                            title : "Дата получения UAH",
-                            editor: dateEditor,
-                            format: "{0: dd-MMMM-yyyy}",
+                            field  : "DateUAHPay",
+                            title  : "Дата получения UAH",
+                            editor : dateEditor,
+                            format : "{0: dd-MMMM-yyyy}",
 
                         },
                         {
-                            field  : "SumUSD",
+                            field : "SumUSD",
                             title : "Сумма USD"
 
                         },
                         {
                             field  : "DateUSDPay",
-                            title : "Дата получения USD",
-                            editor: dateEditor,
-                            format: "{0: dd-MMMM-yyyy}",
+                            title  : "Дата получения USD",
+                            editor : dateEditor,
+                            format : "{0: dd-MMMM-yyyy}",
 
 
                         },
                         {
                             command : ["destroy"]
                         }],
-                    editable: true,
+                    editable   : true,
                     dataSource : dataGrid,
 
-                    height     : 600
-
+                    height : 600
 
 
                 }).data("kendoGrid");
@@ -139,19 +137,19 @@ kendo.culture("ru-RU")
         });
         self.view = new View();
 
-        function dateEditor(container, options){
+        function dateEditor(container, options) {
             var input = $("<input/>");
             // set its name to the field to which the column is bound ('name' in this case)
             input.attr("name", options.field);
             // append it to the container
             input.appendTo(container);
-           input.kendoDatePicker({
-                depth: options.field=="MonthToPay" ? "year": "day",
-                start:  options.field=="MonthToPay" ?"year":"day",
-                format: options.field=="MonthToPay" ? "MMMM yyyy":"dd/MMMM/yy",
-                min: new Date(2011, 0, 1),
-                dateInput: true,
-                change: function() {
+            input.kendoDatePicker({
+                depth     : options.field == "MonthToPay" ? "year" : "day",
+                start     : options.field == "MonthToPay" ? "year" : "day",
+                format    : options.field == "MonthToPay" ? "MMMM yyyy" : "dd/MMMM/yy",
+                min       : new Date(2011, 0, 1),
+                dateInput : true,
+                change    : function () {
                     var value = this.value();
                     console.log(value); //value is the selected date in the datepicker
 
@@ -160,9 +158,6 @@ kendo.culture("ru-RU")
 
         }
     }
-
-
-
 
 
 });
