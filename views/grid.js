@@ -6,9 +6,9 @@ define(function () {
 
         var dataBudget = [
             {
-                id           : 2215,
+                id           : "",
                 MonthToPay   : "",
-                SumToPay     : 800,
+                SumToPay     : "",
                 SumUAH       : "",
                 ExchangeRate : "",
                 DateUAHPay   : "",
@@ -18,44 +18,63 @@ define(function () {
         ];
         kendo.culture("ru-RU")
         var dataGrid = new kendo.data.DataSource({
-            data     : dataBudget,
-            autoSync : false,
-            change   : function (e) {
-                if (e.action == "itemchange" && e.field == "SumToPay") {
-                    var item = e.items[0].toJSON();
+                data     : dataBudget,
+                autoSync : false,
+                change   : function (e) {
+                    if (e.action == "itemchange") {
+                        var item = e.items[0].toJSON();
+                        switch (e.field) {
+                            case "SumToPay" :
+                                item.SumUSD = Math.floor((item.SumToPay / 3) / 100) * 100;
+                                item.SumUAH = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : (item.SumToPay - item.SumUSD) + "$ - установи курс!";
+                                this.pushUpdate(item);
+                                this.fetch();
+                                break;
+                            case "ExchangeRate" :
+                                item.SumUAH = item.SumUAH ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : 0;
+                                this.pushUpdate(item);
+                                this.fetch();
+                                break;
+                        }
+                    }
 
-                    item.SumUSD = Math.floor((item.SumToPay / 3) / 100) * 100;
-                    item.SumUAH = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : item.SumToPay - item.SumUSD;
-                    this.pushUpdate(item);
-                    this.fetch();
-                }
 
+                },
+                schema   : {
+                    model : {
+                        id     : "id",
+                        fields : {
+                            id           : {
+                                defaultValue : function () {
+                                    return kendo.guid();
+                                }
 
-
-            },
-            schema   : {
-                model : {
-                    id     : "id",
-                    fields : {
-                        id           : {
-                            defaultValue : function () {
-                                return kendo.guid();
                             }
+                            ,
+                            MonthToPay   : {
 
-                        },
-                        MonthToPay   : {},
-                        SumToPay     : {},
-                        SumUAH       : {},
-                        ExchangeRate : {},
-                        DateUAHPay   : {},
-                        SumUSD       : {},
-                        DateUSDPay   : {}
+                            }
+                            ,
+                            SumToPay     : {
+
+                            }
+                            ,
+                            SumUAH       : {}
+                            ,
+                            ExchangeRate : {}
+                            ,
+                            DateUAHPay   : {}
+                            ,
+                            SumUSD       : {}
+                            ,
+                            DateUSDPay   : {}
+                        }
                     }
                 }
+
+
             }
-
-
-        });
+        );
 
 
         var View  = Backbone.View.extend({
@@ -89,8 +108,8 @@ define(function () {
 
                         {
                             field : "SumToPay",
-                            title : "Сумма к оплате"
-
+                            title : "Сумма к оплате",
+                            editor : numberEditor
                         },
                         {
                             field : "SumUAH",
@@ -122,9 +141,9 @@ define(function () {
 
                         },
                         {
-                            command : ["destroy"]
+                            command : ["edit", "destroy"]
                         }],
-                    editable   : true,
+                    editable   : "inline",
                     dataSource : dataGrid,
 
                     height : 600
@@ -138,7 +157,8 @@ define(function () {
         self.view = new View();
 
         function dateEditor(container, options) {
-            var input = $("<input/>");
+var req= (options.field == 'MonthToPay') ? 'required=required' : "";
+            var input = $("<input "+  req + ">");
             // set its name to the field to which the column is bound ('name' in this case)
             input.attr("name", options.field);
             // append it to the container
@@ -157,7 +177,14 @@ define(function () {
             }).data("kendoDatePicker");
 
         }
+        function numberEditor (container, options) {
+            $('<input class="k-input k-textbox" required="required" min="100" data-bind="value:' + options.field + '"/>')
+                .appendTo(container);
+
+        }
     }
 
 
-});
+
+})
+;
