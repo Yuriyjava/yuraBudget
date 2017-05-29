@@ -4,18 +4,8 @@ define(function () {
 
         var self = this;
 
-        var dataBudget = [
-            {
-                id           : "",
-                MonthToPay   : "",
-                SumToPay     : "",
-                SumUAH       : "",
-                ExchangeRate : "",
-                DateUAHPay   : "",
-                SumUSD       : "",
-                DateUSDPay   : ""
-            }
-        ];
+        var dataBudget =  [];
+
         kendo.culture("ru-RU")
         var dataGrid = new kendo.data.DataSource({
                 data     : dataBudget,
@@ -28,14 +18,15 @@ define(function () {
                                 item.SumUSD = Math.floor((item.SumToPay / 3) / 100) * 100;
                                 item.SumUAH = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : (item.SumToPay - item.SumUSD) + "$ - установи курс!";
                                 this.pushUpdate(item);
-                                this.fetch();
+
                                 break;
                             case "ExchangeRate" :
                                 item.SumUAH = item.SumUAH ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : 0;
                                 this.pushUpdate(item);
-                                this.fetch();
+
                                 break;
                         }
+
                     }
 
 
@@ -51,13 +42,9 @@ define(function () {
 
                             }
                             ,
-                            MonthToPay   : {
-
-                            }
+                            MonthToPay   : {}
                             ,
-                            SumToPay     : {
-
-                            }
+                            SumToPay     : {}
                             ,
                             SumUAH       : {}
                             ,
@@ -86,16 +73,26 @@ define(function () {
                 this.render();
             },
             render     : function () {
+                var self   = this;
                 var gridEl = $("<div></div>");
                 this.$el.html(gridEl);
 
-                this.grid = gridEl.kendoGrid({
-                    toolbar : ["create", "save"],
-
-                    columns    : [
+                self.grid = gridEl.kendoGrid({
+                    theme       : "material",
+                    toolbar     : [
                         {
-                            field  : "id",
-                            hidden : true
+                            name : "create"
+                        },
+                        {
+                            name  : "save"
+
+                        }],
+                    dataSource  : dataGrid,
+                    columns     : [
+                        {
+                            field    : "id",
+                            hidden   : true,
+                            editable : false
                         },
                         {
                             field  : "MonthToPay",
@@ -107,8 +104,8 @@ define(function () {
                         },
 
                         {
-                            field : "SumToPay",
-                            title : "Сумма к оплате",
+                            field  : "SumToPay",
+                            title  : "Сумма к оплате",
                             editor : numberEditor
                         },
                         {
@@ -141,13 +138,30 @@ define(function () {
 
                         },
                         {
-                            command : ["edit", "destroy"],
-                            width: "200px"
-                        }],
-                    editable   : "inline",
-                    dataSource : dataGrid,
 
-                    height : 600
+                            width : "200px"
+                        }],
+                    editable    : {
+                        createAt : "bottom",
+                        mode     : "popup"
+
+                    },
+                    height      : 600,
+                    rowTemplate : kendo.template($("#rowTemplate").html()),
+                    edit        : function (e) {
+                        self.popupWindow = e.container;
+                        self.editModel   = e.model;
+                    },
+                    dataBinding : function (e) {
+                        if (e.action === "itemchange") {
+                            kendo.bind(self.popupWindow, self.editModel);
+
+                        }
+                    },
+                    saveChanges:function(e){
+                        console.log(e.sender.dataSource.data().toJSON());
+                        localStorage.setItem("budget", e.sender.dataSource.data().toJSON());
+                    }
 
 
                 }).data("kendoGrid");
@@ -158,29 +172,29 @@ define(function () {
         self.view = new View();
 
         function dateEditor(container, options) {
-            var req= (options.field == 'MonthToPay') ? 'required' : "";
-            var input = $("<input "+  req + " validationMessage='Заполни дату' />");
+            var req   = (options.field == 'MonthToPay') ? 'required' : "";
+            var input = $("<input " + req + " validationMessage='Заполни дату' />");
             // set its name to the field to which the column is bound ('name' in this case)
             input.attr("name", options.field);
             // append it to the container
             input.appendTo(container);
             input.kendoDatePicker({
-                depth     : options.field == "MonthToPay" ? "year" : "day",
-                start     : options.field == "MonthToPay" ? "year" : "day",
-                format    : options.field == "MonthToPay" ? "MMMM yyyy" : "dd/MMMM/yy",
-                min       : new Date(2011, 0, 1),
+                depth  : options.field == "MonthToPay" ? "year" : "day",
+                start  : options.field == "MonthToPay" ? "year" : "day",
+                format : options.field == "MonthToPay" ? "MMMM yyyy" : "dd/MMMM/yy",
+                min    : new Date(2011, 0, 1),
 
                 dateInput : true
-                            }).data("kendoDatePicker");
+            }).data("kendoDatePicker");
 
         }
-        function numberEditor (container, options) {
+
+        function numberEditor(container, options) {
             $('<input class="k-input k-textbox" required min="100" validationMessage="Заполни сумму ЗП"/>').attr("name", options.field)
                 .appendTo(container);
 
         }
     }
-
 
 
 })

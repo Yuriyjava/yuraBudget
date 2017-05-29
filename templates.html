@@ -1,35 +1,18 @@
-<script type="text/template" id="videoText">
-<div style="background: url(<%= img %>); background-repeat: no-repeat;" class="video-block">
-    <div><object type="application/x-shockwave-flash" id="AMplayer" name="AMplayer" align="middle" data=<%= video %>
-        width=<%= width %> height=<%= height %>>
-        <param name="quality" value="high">
-        <param name="bgcolor" value="#FFFFFF">
-        <param name="allowscriptaccess" value="sameDomain">
-        <param name="allowfullscreen" value="true">
-        <param name="wmode" value="opaque">
-        <param name="flashvars" value=<%= playlist %>
-        >
-    </object></div>
-</div>
-    <div><%= text %> </div>
+<script type="text/template" id="rowTemplate">
 
-</script>
-
-
-<script type="text/template" id="charBlock">
-   <div class ="square">
-       <div class="round">
-           <img src="<%= charImg %>" alt="">
-       </div>
-       <div class="charText"> <%= charText %></div>
-   </div>
-
-</script>
-<script type="text/template" id="contacts">
-   <div class="post">
-       <img src="img/post.png" alt="">
-       <a class="text" href="mailto:panora-video@gmail.com">panora-video@gmail.com</a>
-   </div>
-
+    <tr data-uid="#= uid #" class="#: DateUAHPay&&DateUSDPay  ? 'green':'' #">
+        <td>#: kendo.toString(MonthToPay, "MMMM yyyy") #</td>
+        <td>#: SumToPay #</td>
+        <td class="#: DateUAHPay  ? 'green':'' #">#: SumUAH #</td>
+        <td>#: ExchangeRate #</td>
+        <td class="#: DateUAHPay ? 'green':'' #">#: kendo.toString(DateUAHPay,"dd MMMM yy") #</td>
+        <td class="#: DateUSDPay  ? 'green':'' #">#: SumUSD #</td>
+        <td class="#: DateUSDPay  ? 'green':'' #">#: kendo.toString(DateUSDPay,"dd MMMM yy") #</td>
+        <td><a class="k-button k-button-icontext k-grid-edit" href="\\#"><span
+                class="k-icon k-edit"></span>Edit</a><a class="k-button k-button-icontext k-grid-delete"
+                                                        href="\\#"><span
+                class="k-icon k-delete"></span>Delete</a>
+        </td>
+    </tr>
 
 </script>
