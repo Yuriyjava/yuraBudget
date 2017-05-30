@@ -4,7 +4,7 @@ define(function () {
 
         var self = this;
 
-        var dataBudget =  [];
+        var dataBudget = JSON.parse(localStorage.getItem("budget")) || [];
 
         kendo.culture("ru-RU")
         var dataGrid = new kendo.data.DataSource({
@@ -14,16 +14,21 @@ define(function () {
                     if (e.action == "itemchange") {
                         var item = e.items[0].toJSON();
                         switch (e.field) {
-                            case "SumToPay" :
-                                item.SumUSD = Math.floor((item.SumToPay / 3) / 100) * 100;
-                                item.SumUAH = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : (item.SumToPay - item.SumUSD) + "$ - установи курс!";
+                            case "AccruedSum" :
+                                item.SumToPay = item.Prepayment ? item.AccruedSum - item.Prepayment : item.AccruedSum;
+                                item.SumUSD   = Math.floor((item.SumToPay / 3) / 100) * 100;
+                                item.SumUAH   = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : (item.SumToPay - item.SumUSD) + "$ - установи курс!";
                                 this.pushUpdate(item);
-
                                 break;
                             case "ExchangeRate" :
                                 item.SumUAH = item.SumUAH ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : 0;
                                 this.pushUpdate(item);
-
+                                break;
+                            case "Prepayment" :
+                                item.SumToPay = item.Prepayment ? item.AccruedSum - item.Prepayment : item.AccruedSum;
+                                item.SumUSD   = Math.floor((item.SumToPay / 3) / 100) * 100;
+                                item.SumUAH   = item.ExchangeRate ? (item.SumToPay - item.SumUSD) * item.ExchangeRate : (item.SumToPay - item.SumUSD) + "$ - установи курс!";
+                                this.pushUpdate(item);
                                 break;
                         }
 
@@ -44,8 +49,10 @@ define(function () {
                             ,
                             MonthToPay   : {}
                             ,
+                            AccruedSum   : {},
                             SumToPay     : {}
                             ,
+                            Prepayment   : {},
                             SumUAH       : {}
                             ,
                             ExchangeRate : {}
@@ -84,15 +91,15 @@ define(function () {
                             name : "create"
                         },
                         {
-                            name  : "save"
+                            name : "save"
 
                         }],
                     dataSource  : dataGrid,
                     columns     : [
                         {
-                            field    : "id",
-                            hidden   : true,
-                            editable : false
+                            field  : "id",
+                            hidden : true,
+                            editor : idEditor,
                         },
                         {
                             field  : "MonthToPay",
@@ -102,11 +109,22 @@ define(function () {
 
 
                         },
+                        {
+                            field  : "AccruedSum",
+                            title  : "Сумма начислено",
+                            editor : numberEditor
+                        },
 
                         {
                             field  : "SumToPay",
                             title  : "Сумма к оплате",
                             editor : numberEditor
+                        },
+
+                        {
+                            field : "Prepayment",
+                            title : "Сумма аванса",
+
                         },
                         {
                             field : "SumUAH",
@@ -146,22 +164,41 @@ define(function () {
                         mode     : "popup"
 
                     },
+
                     height      : 600,
                     rowTemplate : kendo.template($("#rowTemplate").html()),
                     edit        : function (e) {
                         self.popupWindow = e.container;
-                        self.editModel   = e.model;
-                    },
-                    dataBinding : function (e) {
-                        if (e.action === "itemchange") {
-                            kendo.bind(self.popupWindow, self.editModel);
+
+                        if (!e.model.MonthToPay) {
+                        var index=_.findIndex(e.sender.dataSource._data, {id:e.model.id});
+                           var D = new Date(e.sender.dataSource._data[index-1] ? e.sender.dataSource._data[index-1].MonthToPay:"");
+                            D.setMonth(D.getMonth() + 1);
+                            console.log(kendo.toString(new Date(D), "MMMM yyyy"));
+                            e.model.AccruedSum=900;
+                            e.sender.dataSource.pushUpdate(e.model);
 
                         }
                     },
-                    saveChanges:function(e){
-                        console.log(e.sender.dataSource.data().toJSON());
-                        localStorage.setItem("budget", e.sender.dataSource.data().toJSON());
+                    dataBinding : function (e) {
+
+                        if (e.action === "itemchange") {
+                            console.log("dataBinding");
+                            console.log(e);
+                            kendo.bind(self.popupWindow, e.items[0]);
+
+                        }
+                    },
+                    saveChanges : function (e) {
+                        var data = e.sender.dataSource.data().toJSON();
+                        console.log(JSON.stringify(data));
+                        localStorage.setItem("budget", JSON.stringify(data));
+
+                    },
+                    change: function(){
+                        debugger;
                     }
+
 
 
                 }).data("kendoGrid");
@@ -172,6 +209,7 @@ define(function () {
         self.view = new View();
 
         function dateEditor(container, options) {
+            debugger;
             var req   = (options.field == 'MonthToPay') ? 'required' : "";
             var input = $("<input " + req + " validationMessage='Заполни дату' />");
             // set its name to the field to which the column is bound ('name' in this case)
@@ -190,8 +228,22 @@ define(function () {
         }
 
         function numberEditor(container, options) {
-            $('<input class="k-input k-textbox" required min="100" validationMessage="Заполни сумму ЗП"/>').attr("name", options.field)
-                .appendTo(container);
+            if (options.field == "AccruedSum") {
+                $('<input class="k-input k-textbox" required min="100" validationMessage="Заполни сумму ЗП"/>').attr("name", options.field)
+                    .appendTo(container);
+            }
+            else {
+                $('<input class="k-input k-textbox" disabled="disabled" min="100" validationMessage="Заполни сумму ЗП"/>').attr("name", options.field)
+                    .appendTo(container);
+            }
+
+
+        }
+
+        function idEditor(container, options) {
+            $("div > label[for='" + options.field + "']").hide();
+            container.hide();
+
 
         }
     }
