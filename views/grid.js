@@ -85,8 +85,8 @@ define(function () {
                 this.$el.html(gridEl);
 
                 self.grid = gridEl.kendoGrid({
-                    theme       : "material",
-                    toolbar     : [
+                    theme      : "material",
+                    toolbar    : [
                         {
                             name : "create"
                         },
@@ -94,8 +94,8 @@ define(function () {
                             name : "save"
 
                         }],
-                    dataSource  : dataGrid,
-                    columns     : [
+                    dataSource : dataGrid,
+                    columns    : [
                         {
                             field  : "id",
                             hidden : true,
@@ -159,7 +159,7 @@ define(function () {
 
                             width : "200px"
                         }],
-                    editable    : {
+                    editable   : {
                         createAt : "bottom",
                         mode     : "popup"
 
@@ -170,15 +170,6 @@ define(function () {
                     edit        : function (e) {
                         self.popupWindow = e.container;
 
-                        if (!e.model.MonthToPay) {
-                        var index=_.findIndex(e.sender.dataSource._data, {id:e.model.id});
-                           var D = new Date(e.sender.dataSource._data[index-1] ? e.sender.dataSource._data[index-1].MonthToPay:"");
-                            D.setMonth(D.getMonth() + 1);
-                            console.log(kendo.toString(new Date(D), "MMMM yyyy"));
-                            e.model.AccruedSum=900;
-                            e.sender.dataSource.pushUpdate(e.model);
-
-                        }
                     },
                     dataBinding : function (e) {
 
@@ -191,14 +182,11 @@ define(function () {
                     },
                     saveChanges : function (e) {
                         var data = e.sender.dataSource.data().toJSON();
-                        console.log(JSON.stringify(data));
                         localStorage.setItem("budget", JSON.stringify(data));
 
                     },
-                    change: function(){
-                        debugger;
+                    change      : function () {
                     }
-
 
 
                 }).data("kendoGrid");
@@ -208,8 +196,14 @@ define(function () {
         });
         self.view = new View();
 
+
         function dateEditor(container, options) {
-            debugger;
+
+            var index = self.view.grid.dataSource._data.length - 1;
+            var D     = new Date(self.view.grid.dataSource._data[index - 1] ? self.view.grid.dataSource._data[index - 1].MonthToPay : "");
+            D.setMonth(D.getMonth() + 1);
+            self.view.grid.dataSource._data[index].MonthToPay = D;
+            self.view.grid.dataSource._data[index].ExchangeRate=self.view.grid.dataSource._data[index-1]? self.view.grid.dataSource._data[index-1].ExchangeRate:'';
             var req   = (options.field == 'MonthToPay') ? 'required' : "";
             var input = $("<input " + req + " validationMessage='Заполни дату' />");
             // set its name to the field to which the column is bound ('name' in this case)

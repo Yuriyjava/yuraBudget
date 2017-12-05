@@ -4,6 +4,8 @@ body {
 
 #content {
     overflow: auto;
+    width: 900px;
+    margin: 90px auto;
 }
 .green{
     background-color:#7cffa1 ;
