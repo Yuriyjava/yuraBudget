@@ -1,6 +1,6 @@
-define(function () {
 
-    return function () {
+
+function Grid() {
 
         var self = this;
 
@@ -240,8 +240,6 @@ define(function () {
 
 
         }
-    }
+    };
 
-
-})
-;
+export default Grid;

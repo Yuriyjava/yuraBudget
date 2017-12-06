@@ -15,8 +15,8 @@
     <link rel="stylesheet" href="css/kendo.material.min.css" />
     <script src="libs/jquery-3.2.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.js"></script>
-    <script src="libs/underscore.js"></script>
-    <script src="libs/backbone.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -24,7 +24,7 @@
 
     <script src="libs/kendo.all.min.js"></script>
     <script src="libs/kendo.culture.ru-RU.min.js"></script>
-    <script data-main="main.js" src="libs/require.js"></script>
+    <script src= "dist/bundle.js"> </script>
 </head>
 
 <body>
@@ -44,7 +44,113 @@
 
 
 </div>
+<div>
+    <script type="text/template" id="rowTemplate">
 
+        <tr data-uid="#= uid #" class="#: DateUAHPay&&DateUSDPay  ? 'green':'' #">
+            <td>#: MonthToPay ? kendo.toString(new Date(MonthToPay), "MMMM yyyy"):"" #</td>
+            <td>#: AccruedSum #</td>
+            <td>#: Prepayment #</td>
+            <td>#: SumToPay #</td>
+            <td class="#: DateUAHPay  ? 'green':'' #">#: SumUAH #</td>
+            <td>#: ExchangeRate #</td>
+            <td class="#: DateUAHPay ? 'green':'' #">#:DateUAHPay? kendo.toString(new Date(DateUAHPay),"dd MMMM yy"):"" #
+            </td>
+            <td class="#: DateUSDPay  ? 'green':'' #">#: SumUSD #</td>
+            <td class="#: DateUSDPay  ? 'green':'' #">#: DateUSDPay? kendo.toString(new Date(DateUSDPay),"dd MMMM yy"):""
+                #
+            </td>
+            <td><a class="k-button k-button-icontext k-grid-edit" href="\\#"><span
+                    class="k-icon k-edit"></span>Edit</a><a class="k-button k-button-icontext k-grid-delete"
+                                                            href="\\#"><span
+                    class="k-icon k-delete"></span>Delete</a>
+            </td>
+        </tr>
+
+    </script>
+
+    <script type="text/template" id="editWindowTemplate">
+        <div class="k-widget k-window" data-role="draggable"
+             style="padding-top: 32.9088px; min-width: 90px; min-height: 50px; top: 173.344px; left: 412px; touch-action: none; z-index: 10003; opacity: 1; transform: scale(1);">
+            <div class="k-window-titlebar k-header" style="margin-top: -32.9088px;">&nbsp;<span
+                    class="k-window-title">Edit</span>
+                <div class="k-window-actions"><a role="button" href="#" class="k-window-action k-link"><span role="presentation"
+                                                                                                             class="k-icon k-i-close">Close</span></a>
+                </div>
+            </div>
+            <div data-uid="03c454ce-0207-4ed3-8fe7-eaa3602f67d0" class="k-popup-edit-form k-window-content k-content"
+                 data-role="window" tabindex="0">
+                <div class="k-edit-form-container">
+                    <div class="k-edit-label"><label for="id">id</label></div>
+                    <div data-container-for="id" class="k-edit-field"><input type="text" class="k-input k-textbox" name="id"
+                                                                             data-bind="value:id"></div>
+                    <div class="k-edit-label"><label for="MonthToPay">Месяц оплаты</label></div>
+                    <div data-container-for="MonthToPay" class="k-edit-field"><span class="k-widget k-datepicker k-header"><span
+                            class="k-picker-wrap k-state-default"><input required="" validationmessage="Заполни дату"
+                                                                         name="MonthToPay" data-role="datepicker" type="text"
+                                                                         class="k-input" role="combobox" aria-expanded="false"
+                                                                         aria-disabled="false" data-bind="value:MonthToPay"
+                                                                         style="width: 100%;"><span unselectable="on"
+                                                                                                    class="k-select"
+                                                                                                    role="button"><span
+                            unselectable="on" class="k-icon k-i-calendar">select</span></span></span></span></div>
+                    <div class="k-edit-label"><label for="AccruedSum">Сумма начислено</label></div>
+                    <div data-container-for="AccruedSum" class="k-edit-field"><input class="k-input k-textbox" required=""
+                                                                                     min="100"
+                                                                                     validationmessage="Заполни сумму ЗП"
+                                                                                     name="AccruedSum"
+                                                                                     data-bind="value:AccruedSum"></div>
+                    <div class="k-edit-label"><label for="SumToPay">Сумма к оплате</label></div>
+                    <div data-container-for="SumToPay" class="k-edit-field"><input class="k-input k-textbox" disabled="disabled"
+                                                                                   min="100"
+                                                                                   validationmessage="Заполни сумму ЗП"
+                                                                                   name="SumToPay" data-bind="value:SumToPay">
+                    </div>
+                    <div class="k-edit-label"><label for="Prepayment">Сумма аванса</label></div>
+                    <div data-container-for="Prepayment" class="k-edit-field"><input type="text" class="k-input k-textbox"
+                                                                                     name="Prepayment"
+                                                                                     data-bind="value:Prepayment"></div>
+                    <div class="k-edit-label"><label for="SumUAH">Сумма гривен</label></div>
+                    <div data-container-for="SumUAH" class="k-edit-field"><input type="text" class="k-input k-textbox"
+                                                                                 name="SumUAH" data-bind="value:SumUAH"></div>
+                    <div class="k-edit-label"><label for="ExchangeRate">Курс</label></div>
+                    <div data-container-for="ExchangeRate" class="k-edit-field"><input type="text" class="k-input k-textbox"
+                                                                                       name="ExchangeRate"
+                                                                                       data-bind="value:ExchangeRate"></div>
+                    <div class="k-edit-label"><label for="DateUAHPay">Дата получения UAH</label></div>
+                    <div data-container-for="DateUAHPay" class="k-edit-field"><span class="k-widget k-datepicker k-header"><span
+                            class="k-picker-wrap k-state-default"><input validationmessage="Заполни дату" name="DateUAHPay"
+                                                                         data-role="datepicker" type="text" class="k-input"
+                                                                         role="combobox" aria-expanded="false"
+                                                                         aria-disabled="false" data-bind="value:DateUAHPay"
+                                                                         style="width: 100%;"><span unselectable="on"
+                                                                                                    class="k-select"
+                                                                                                    role="button"><span
+                            unselectable="on" class="k-icon k-i-calendar">select</span></span></span></span></div>
+                    <div class="k-edit-label"><label for="SumUSD">Сумма USD</label></div>
+                    <div data-container-for="SumUSD" class="k-edit-field"><input type="text" class="k-input k-textbox"
+                                                                                 name="SumUSD" data-bind="value:SumUSD"></div>
+                    <div class="k-edit-label"><label for="DateUSDPay">Дата получения USD</label></div>
+                    <div data-container-for="DateUSDPay" class="k-edit-field"><span class="k-widget k-datepicker k-header"><span
+                            class="k-picker-wrap k-state-default"><input validationmessage="Заполни дату" name="DateUSDPay"
+                                                                         data-role="datepicker" type="text" class="k-input"
+                                                                         role="combobox" aria-expanded="false"
+                                                                         aria-disabled="false" data-bind="value:DateUSDPay"
+                                                                         style="width: 100%;"><span unselectable="on"
+                                                                                                    class="k-select"
+                                                                                                    role="button"><span
+                            unselectable="on" class="k-icon k-i-calendar">select</span></span></span></span></div>
+                    <div class="k-edit-label"><label for="undefined"></label></div>
+                    <div class="k-edit-field"></div>
+                    <div class="k-edit-buttons k-state-default"><a class="k-button k-button-icontext k-primary k-grid-update"
+                                                                   href="#"><span class="k-icon k-update"></span>Update</a><a
+                            class="k-button k-button-icontext k-grid-cancel" href="#"><span class="k-icon k-cancel"></span>Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>
 </body>
 
 </html>

@@ -1,12 +1,15 @@
 body {
     padding-top: 20px;
-    background-color: #4a4f5b ;
-}
 
+}
+.app{
+    background-color: #4a4f5b ;
+
+}
 #content {
     overflow: auto;
-    width: 900px;
-    margin: 90px auto;
+    width: 1600px;
+    margin: 30px auto;
 }
 .green{
     background-color:#7cffa1 ;
