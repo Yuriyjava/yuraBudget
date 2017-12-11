@@ -14,8 +14,8 @@
     // views, layouts
 
         var GridView= new Grid();
-        var MyRouter= Backbone.Router.extend({
 
+        var MyRouter= Backbone.Router.extend({
             routes     : {
                 ""         : "home",
                 "home"     : "home",
