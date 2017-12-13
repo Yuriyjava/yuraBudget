@@ -1,6 +1,7 @@
 
     import Grid from './views/grid.js';
-    import Templates from './templates.html';
+    import Templates from 'html-loader!./templates.html';
+
     $(document).ready(function(){
     jQuery.migrateMute=true;
     jQuery.migrateTrace = false;
