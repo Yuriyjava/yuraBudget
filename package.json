@@ -22,7 +22,7 @@
     "webpack": "^3.10.0"
   },
   "scripts": {
-    "start": "npm run build && npm run server",
+    "start": "npm run server",
     "test": "npm run build && npm run server | npm run watch",
     "server": "node ./server/server.js",
     "build": "webpack -p",
