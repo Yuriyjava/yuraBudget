@@ -1,6 +1,6 @@
 
     import Grid from './views/grid.js';
-    import Templates from 'html-loader!./templates.html';
+    import Templates from './templates.html';
 
     $(document).ready(function(){
     jQuery.migrateMute=true;
@@ -30,6 +30,7 @@
                 Backbone.history.start()
             },
             home       : function () {
+                debugger
                 GridView.view.render();
 
             }

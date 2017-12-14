@@ -6,7 +6,7 @@ var fs = require('fs');
 var app = express();
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var MongoClient = require('mongodb').MongoClient;
+//var MongoClient = require('mongodb').MongoClient;
 var MongoStore = require('connect-mongo')(session);
 var format = require('util').format;
 var db = require('./db.js');
@@ -15,11 +15,13 @@ var bodyParser = require('body-parser');
 
 var url = 'mongodb://localhost:27017/test';
 
+/*
 MongoClient.connect(url, function (err, testdb) {
     if (err) console.log(err);
     console.log('connected to db');
     testdb.close();
 });
+*/
 
 app.use(cookieParser());
 app.use(bodyParser.json());

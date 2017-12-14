@@ -3,10 +3,9 @@
 function Grid() {
 
         var self = this;
-
         var dataBudget = JSON.parse(localStorage.getItem("budget")) || [];
 
-        kendo.culture("ru-RU")
+        kendo.culture("ru-RU");
         var dataGrid = new kendo.data.DataSource({
                 data     : dataBudget,
                 autoSync : false,
@@ -88,11 +87,12 @@ function Grid() {
                     theme      : "material",
                     toolbar    : [
                         {
-                            name : "create"
+                            name : "create",
+                            text: "Добавить новую запись"
                         },
                         {
-                            name : "save"
-
+                            name : "save",
+                            text: "Сохранить данные"
                         }],
                     dataSource : dataGrid,
                     columns    : [
