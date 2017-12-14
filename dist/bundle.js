@@ -429,13 +429,17 @@ function SignUp() {
                alert("Введенные пароли не совпадают!");
                 return false;
             }
-            debugger
+
             $.post( "/signup", {
                 username: name,
                 password: pass,
                 email: email
             } ).done(function( data ) {
+                debugger
                 window.location.replace("#home");
+            }).fail(function(err) {
+                debugger
+                alert( err );
             });
             return false;
         },

@@ -41,8 +41,8 @@ module.exports = function(passport){
 	/* Handle Registration POST */
 	router.post('/signup', passport.authenticate('signup', {
 		successRedirect: '/home',
-		failureRedirect: '/signup',
-		failureFlash : true  
+		failureRedirect: '500',
+		failureFlash : true
 	}));
 
 	/* GET User data */
