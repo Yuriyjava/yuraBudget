@@ -7,6 +7,7 @@ var isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
 	// Passport adds this method to request object. A middleware is allowed to add properties to
 	// request and response objects
+
 	if (req.isAuthenticated())
 		return next();
 	// if the user is not authenticated then redirect him to the login page
@@ -35,35 +36,34 @@ module.exports = function(passport){
 		successRedirect: '/home',
 		failureRedirect: '/',
 		failureFlash : true  
-	}), function(res, req){
-         res.jsonp({data: req.user.data})
-    });
+	}));
 
 	/* Handle Registration POST */
 	router.post('/signup', passport.authenticate('signup', {
 		successRedirect: '/home',
 		failureRedirect: '/signup',
 		failureFlash : true  
-	}), function(res, req){
-		 res.jsonp({data: req.user.data})
- 	});
+	}));
 
-	/*/!* GET User data *!/
-	router.post('/getData', isAuthenticated, function(req, res){
-		var userId =
-        res.jsonp({data: req.user.data });
-	});*/
+	/* GET User data */
+	router.get('/home', isAuthenticated, function(req, res){
 
-    router.post('/saveData', isAuthenticated, function(req, res){
-    	var userId = req._id;
-        User.findByIdAndUpdate(userId,
-            { data: req.data},
+		if(req.user.data) {
+            res.status(200).jsonp({data : req.user.data});
+        }else{
+			res.status(403).redirect('/');
+		}
+	});
+
+    router.post('/saveData', function(req, res){
+    	var userId = req.user._id;
+        User.findOne({ '_id' : userId },
             function(err, user) {
-                if (err) res.status(500).send(err);;
-                console.log(user);
+                if (err) res.status(500).send(err);
+                user.data = req.body.data;
+				user.save();
                 res.status(200).send('OK');
             });
-
     });
 
 	/* Handle Logout */

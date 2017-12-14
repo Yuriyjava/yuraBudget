@@ -1,11 +1,10 @@
-
     import Grid from './views/grid.js';
+    import SignUp from './views/signUp.js';
+    import Login from './views/login.js';
     import Templates from './templates.html';
 
     $(document).ready(function(){
-    jQuery.migrateMute=true;
-    jQuery.migrateTrace = false;
-    jQuery.migrateReset();
+
     var div       = document.createElement('div');
     div.innerHTML = Templates;
     document.body.appendChild(div);
@@ -14,29 +13,36 @@
 
     // views, layouts
 
-        var GridView= new Grid();
+
+
 
         var MyRouter= Backbone.Router.extend({
             routes     : {
-                ""         : "home",
+                ""         : "login",
                 "home"     : "home",
-                "sport"    : "sport",
-                "learning" : "learning",
-                "multi"    : "multi",
-                "chars"    : "chars",
-                "contacts" : "contacts"
+                "signUp"    : "signUp",
+
             },
             initialize : function () {
                 Backbone.history.start()
             },
             home       : function () {
-                debugger
+                var GridView= new Grid();
                 GridView.view.render();
+            },
+            login:function () {
+                var LoginView= new Login();
+                LoginView.view.render();
 
+            },
+            signUp: function(){
+                var SignUpView= new SignUp();
+                SignUpView.view.render();
             }
 
 
         });
         var router = new MyRouter();
+
     });
 

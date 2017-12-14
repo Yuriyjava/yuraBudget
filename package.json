@@ -37,5 +37,8 @@
   "bugs": {
     "url": "https://github.com/Yuriyjava/yuraBudget/issues"
   },
-  "homepage": "https://github.com/Yuriyjava/yuraBudget#readme"
+  "homepage": "https://github.com/Yuriyjava/yuraBudget#readme",
+  "dependencies": {
+    "kendo-ui-core": "^2017.3.1206"
+  }
 }

@@ -3,8 +3,7 @@
 function Grid() {
 
         var self = this;
-        var dataBudget = JSON.parse(localStorage.getItem("budget")) || [];
-
+        var dataBudget = [];
         kendo.culture("ru-RU");
         var dataGrid = new kendo.data.DataSource({
                 data     : dataBudget,
@@ -74,122 +73,138 @@ function Grid() {
             el : "#content",
 
             initialize : function () {
-
-
-                this.render();
+               // this.render();
             },
             render     : function () {
                 var self   = this;
                 var gridEl = $("<div></div>");
                 this.$el.html(gridEl);
 
-                self.grid = gridEl.kendoGrid({
-                    theme      : "material",
-                    toolbar    : [
-                        {
-                            name : "create",
-                            text: "Добавить новую запись"
-                        },
-                        {
-                            name : "save",
-                            text: "Сохранить данные"
-                        }],
-                    dataSource : dataGrid,
-                    columns    : [
-                        {
-                            field  : "id",
-                            hidden : true,
-                            editor : idEditor,
-                        },
-                        {
-                            field  : "MonthToPay",
-                            title  : "Месяц оплаты",
-                            editor : dateEditor,
-                            format : "{0: MMMM yyyy}"
+                $.get("/home").done(function(response){
+                    if (response.data) {
+                        var model = JSON.parse(response.data);
+                        dataGrid.data(model);
+                        self.grid = gridEl.kendoGrid({
+                            theme      : "material",
+                            toolbar    : [
+                                {
+                                    name : "create",
+                                    text: "Добавить новую запись"
+                                },
+                                {
+                                    name : "save",
+                                    text: "Сохранить данные"
+                                }],
+                            dataSource : dataGrid,
+                            columns    : [
+                                {
+                                    field  : "id",
+                                    hidden : true,
+                                    editor : idEditor,
+                                },
+                                {
+                                    field  : "MonthToPay",
+                                    title  : "Месяц оплаты",
+                                    editor : dateEditor,
+                                    format : "{0: MMMM yyyy}"
 
 
-                        },
-                        {
-                            field  : "AccruedSum",
-                            title  : "Сумма начислено",
-                            editor : numberEditor
-                        },
+                                },
+                                {
+                                    field  : "AccruedSum",
+                                    title  : "Сумма начислено",
+                                    editor : numberEditor
+                                },
 
-                        {
-                            field  : "SumToPay",
-                            title  : "Сумма к оплате",
-                            editor : numberEditor
-                        },
+                                {
+                                    field  : "SumToPay",
+                                    title  : "Сумма к оплате",
+                                    editor : numberEditor
+                                },
 
-                        {
-                            field : "Prepayment",
-                            title : "Сумма аванса",
+                                {
+                                    field : "Prepayment",
+                                    title : "Сумма аванса",
 
-                        },
-                        {
-                            field : "SumUAH",
-                            title : "Сумма гривен"
-                        },
-                        {
-                            field : "ExchangeRate",
-                            title : "Курс"
+                                },
+                                {
+                                    field : "SumUAH",
+                                    title : "Сумма гривен"
+                                },
+                                {
+                                    field : "ExchangeRate",
+                                    title : "Курс"
 
-                        },
-                        {
-                            field  : "DateUAHPay",
-                            title  : "Дата получения UAH",
-                            editor : dateEditor,
-                            format : "{0: dd MMMM yyyy}",
+                                },
+                                {
+                                    field  : "DateUAHPay",
+                                    title  : "Дата получения UAH",
+                                    editor : dateEditor,
+                                    format : "{0: dd MMMM yyyy}",
 
-                        },
-                        {
-                            field : "SumUSD",
-                            title : "Сумма USD"
+                                },
+                                {
+                                    field : "SumUSD",
+                                    title : "Сумма USD"
 
-                        },
-                        {
-                            field  : "DateUSDPay",
-                            title  : "Дата получения USD",
-                            editor : dateEditor,
-                            format : "{0: dd MMMM yyyy}",
+                                },
+                                {
+                                    field  : "DateUSDPay",
+                                    title  : "Дата получения USD",
+                                    editor : dateEditor,
+                                    format : "{0: dd MMMM yyyy}",
 
 
-                        },
-                        {
+                                },
+                                {
 
-                            width : "200px"
-                        }],
-                    editable   : {
-                        createAt : "bottom",
-                        mode     : "popup"
+                                    width : "200px"
+                                }],
+                            editable   : {
+                                createAt : "bottom",
+                                mode     : "popup"
 
-                    },
+                            },
 
-                    height      : 600,
-                    rowTemplate : kendo.template($("#rowTemplate").html()),
-                    edit        : function (e) {
-                        self.popupWindow = e.container;
+                            height      : 600,
+                            rowTemplate : kendo.template($("#rowTemplate").html()),
+                            edit        : function (e) {
+                                self.popupWindow = e.container;
 
-                    },
-                    dataBinding : function (e) {
+                            },
+                            dataBinding : function (e) {
 
-                        if (e.action === "itemchange") {
-                            console.log("dataBinding");
-                            console.log(e);
-                            kendo.bind(self.popupWindow, e.items[0]);
+                                if (e.action === "itemchange") {
+                                    console.log("dataBinding");
+                                    console.log(e);
+                                    kendo.bind(self.popupWindow, e.items[0]);
 
-                        }
-                    },
-                    saveChanges : function (e) {
-                        var data = e.sender.dataSource.data().toJSON();
-                        localStorage.setItem("budget", JSON.stringify(data));
+                                }
+                            },
+                            saveChanges : function (e) {
+                                var model = e.sender.dataSource.data().toJSON();
+                                $.post("/saveData",{
+                                    data: JSON.stringify(model)
+                                }).done(function(data) {
+                                    alert("Данные сохранены успешно!")
+                                });
+                            },
+                            change      : function () {
+                            }
 
-                    },
-                    change      : function () {
+
+                        }).data("kendoGrid");
+                    }else{
+                        window.location.replace("/");
+                        alert("Авторизируйтесь пожалуйста");
                     }
 
+                });
 
-                }).data("kendoGrid");
+
+
+
+
 
             }
 

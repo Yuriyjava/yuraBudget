@@ -65,7 +65,7 @@ app.use('/', routes);
         resp.end(info);
     });
 });*/
-app.get('/*', function (req, resp) {
+app.get('/css/*', function (req, resp) {
     fs.readFile('./' + req.url, function (err, info) {
         if (err) {
             console.error(err);
@@ -73,6 +73,27 @@ app.get('/*', function (req, resp) {
             return
         }
 
+        resp.end(info);
+    });
+});
+
+app.get('/dist/*', function (req, resp) {
+    fs.readFile('./' + req.url, function (err, info) {
+        if (err) {
+            console.error(err);
+            resp.statusCode = 500;
+            return
+        }
+        resp.end(info);
+    });
+});
+app.get('/libs/*', function (req, resp) {
+    fs.readFile('./' + req.url, function (err, info) {
+        if (err) {
+            console.error(err);
+            resp.statusCode = 500;
+            return
+        }
         resp.end(info);
     });
 });
