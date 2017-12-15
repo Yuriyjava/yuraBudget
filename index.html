@@ -44,15 +44,15 @@
             <input type="text" id="inputLogin" class="form-control" placeholder="Введите логин" required="" autofocus="">
             <label for="inputPassword" class="sr-only">Пароль</label>
             <input type="password" id="inputPassword" class="form-control" placeholder="Введите пароль" required="">
-            <div class="checkbox">
+            <!--<div class="checkbox">
                 <label>
                     <input type="checkbox" value="remember-me"> Remember me
                 </label>
-            </div>
+            </div>-->
             <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-
+            <button class="btn btn-lg btn-info btn-block" id="signUpBTN" onclick="signUpClick()">Зарегистрироваться</button>
         </form>
-        <button class="btn btn-lg btn-info btn-block" id="signUpBTN" onclick="signUp()">Зарегистрироваться</button>
+
     </div>
 </div>
 
@@ -60,24 +60,25 @@
 
 
 
-
 </div>
 <script>
      function submitForm(e){
-        var name = $(e.target).find("input#inputLogin").val();
-        var pass =  $(e.target).find("input#inputPassword").val();
+        var name = $(e).find("input#inputLogin").val();
+        var pass =  $(e).find("input#inputPassword").val();
 
         $.post( "/login", {
             username: name,
             password: pass
         } ).done(function(data) {
-
+            window.location.replace("/#home");
+        }).fail(function(data){
+            debugger
         });
         return false;
     };
 
-    function signUp(){
-        window.location.replace(window.location.href +"/signUp");
+    function signUpClick(){
+        window.location.replace("/#signUp");
     }
 </script>
 

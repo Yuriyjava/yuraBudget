@@ -7,7 +7,7 @@ var isAuthenticated = function (req, res, next) {
 	// if user is authenticated in the session, call the next() to call the next request handler 
 	// Passport adds this method to request object. A middleware is allowed to add properties to
 	// request and response objects
-
+console.log(req.isAuthenticated());
 	if (req.isAuthenticated())
 		return next();
 	// if the user is not authenticated then redirect him to the login page
@@ -30,28 +30,73 @@ module.exports = function(passport){
             res.end(info);
         });
 	});
-
+/*    router.get('/signup', function(req, res) {
+        // Display the Login page with any flash message, if any
+        //res.render('index', { message: req.flash('message') });
+        fs.readFile('./signUp.html', function (err, info) {
+            if (err) {
+                console.error(err);
+                resp.statusCode = 500;
+                return
+            }
+         res.end(info);
+        });
+    });*/
 	/* Handle Login POST */
-	router.post('/login', passport.authenticate('login', {
-		successRedirect: '/home',
-		failureRedirect: '/',
-		failureFlash : true  
-	}));
+	router.post('/login',  function(req, res, next) {
+        passport.authenticate('login',{
+            session:true
+        }, function(err, user, info) {
+            if (err) {
+                return next(err); // Error 500
+            }
+
+            if (!user) {
+                //Authentication failed
+                return res.json(401, { "error": req.flash('message')[0] });
+            }
+            //Authentication successful
+            res.send(200);
+        })(req, res, next);
+    });
 
 	/* Handle Registration POST */
-	router.post('/signup', passport.authenticate('signup', {
-		successRedirect: '/home',
-		failureRedirect: '500',
-		failureFlash : true
-	}));
+	router.post('/signup',  function(req, res, next) {
+        passport.authenticate('signup', function(err, user) {
+            if (err) {
+                return next(err); // Error 500
+            }
+
+            if (!user) {
+                //Authentication failed
+                return res.json(401, { "error": req.flash('message')[0] });
+            }
+            //Authentication successful
+
+            res.send(200).jsonp({name: user.username, data:user.data});
+        })(req, res, next);
+    });
 
 	/* GET User data */
-	router.get('/home', isAuthenticated, function(req, res){
+	/*router.get('/home',  function(req, res) {
+        // Display the Login page with any flash message, if any
+        //res.render('index', { message: req.flash('message') });
+        fs.readFile('./home.html', function (err, info) {
+            if (err) {
+                console.error(err);
+                resp.statusCode = 500;
+                return
+            }
+            res.end(info);
+        });
+	});*/
 
+	router.get('/getData', isAuthenticated, function(req, res){
+	    console.log(req);
 		if(req.user.data) {
-            res.status(200).jsonp({data : req.user.data});
+            res.send(200).jsonp({name: req.user.name, data:req.user.data});
         }else{
-			res.status(403).redirect('/');
+			res.send(403);
 		}
 	});
 

@@ -10,7 +10,7 @@ function SignUp() {
     var View  = Backbone.View.extend({
         el         : "#content",
         initialize : function () {
-            this.render();
+           // this.render();
         },
         events: {
             "submit form.formSingUp"         : "submitSignUp",
@@ -35,18 +35,15 @@ function SignUp() {
                 username: name,
                 password: pass,
                 email: email
-            } ).done(function( data ) {
+            } ).done(function(data) {
                 debugger
-                window.location.replace("#home");
-            }).fail(function(err) {
+                window.location.replace("/#home");
+            }).fail(function(data){
                 debugger
-                alert( err );
             });
             return false;
         },
-        signUp: function(){
-            window.location.replace(window.location.href +"#signUp");
-        }
+
 
     });
 

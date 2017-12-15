@@ -80,7 +80,8 @@ function Grid() {
                 var gridEl = $("<div></div>");
                 this.$el.html(gridEl);
 
-                $.get("/home").done(function(response){
+                $.get("/getData").done(function(response){
+                    debugger
                     if (response.data) {
                         var model = JSON.parse(response.data);
                         dataGrid.data(model);
