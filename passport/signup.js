@@ -43,6 +43,7 @@ module.exports = function(passport){
                             }
                             //console.log('User Registration succesful');
                           //  console.log(newUser);
+                            req.login();
                             return done(null, newUser);
                         });
                     }
