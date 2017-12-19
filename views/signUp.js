@@ -10,7 +10,7 @@ function SignUp() {
     var View  = Backbone.View.extend({
         el         : "#content",
         initialize : function () {
-            this.render();
+           // this.render();
         },
         events: {
             "submit form.formSingUp"         : "submitSignUp",
@@ -25,7 +25,6 @@ function SignUp() {
 
             var pass =  $(e.target).find("input#inputPassword").val();
             var passConfirm = $(e.target).find("input#confirmPassword").val();
-            debugger
             if(pass!=passConfirm){
                alert("Введенные пароли не совпадают!");
                 return false;
@@ -35,18 +34,14 @@ function SignUp() {
                 username: name,
                 password: pass,
                 email: email
-            } ).done(function( data ) {
+            } ).done(function(data) {
+                window.location.replace("/#home");
+            }).fail(function(data){
                 debugger
-                window.location.replace("#home");
-            }).fail(function(err) {
-                debugger
-                alert( err );
             });
             return false;
         },
-        signUp: function(){
-            window.location.replace(window.location.href +"#signUp");
-        }
+
 
     });
 

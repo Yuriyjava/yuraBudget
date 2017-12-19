@@ -14,31 +14,23 @@
     // views, layouts
 
 
-
-
+        var GridView= new Grid();
+        var SignUpView= new SignUp();
         var MyRouter= Backbone.Router.extend({
             routes     : {
-                ""         : "login",
                 "home"     : "home",
-                "signUp"    : "signUp",
+                "signUp"     : "signUp",
 
             },
             initialize : function () {
                 Backbone.history.start()
             },
             home       : function () {
-                var GridView= new Grid();
                 GridView.view.render();
             },
-            login:function () {
-                var LoginView= new Login();
-                LoginView.view.render();
-
-            },
-            signUp: function(){
-                var SignUpView= new SignUp();
+            signUp: function () {
                 SignUpView.view.render();
-            }
+            },
 
 
         });

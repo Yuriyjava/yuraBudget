@@ -22,7 +22,7 @@ module.exports = function(passport){
                     }
                     // already exists
                     if (user) {
-                        console.log('User already exists with username: '+username);
+
                         return done(null, false, req.flash('message','User Already Exists'));
                     } else {
                         // if there is no user with that email
@@ -43,6 +43,7 @@ module.exports = function(passport){
                             }
                             //console.log('User Registration succesful');
                           //  console.log(newUser);
+                            req.login();
                             return done(null, newUser);
                         });
                     }
