@@ -3,7 +3,7 @@
  */
 
 import Template from '../signUp.html';
-
+import swal from 'sweetalert2'
 function SignUp() {
     var self = this;
 
@@ -36,8 +36,16 @@ function SignUp() {
                 email: email
             } ).done(function(data) {
                 window.location.replace("/#home");
-            }).fail(function(data){
-                debugger
+            }).fail(function(response){
+                if(response.statusText === "Forbidden" && response.responseText) {
+                    swal({
+                        title             : 'Регистрация отклонена!',
+                        text              : 'Пользователь с таким логином уже существует. Выберите другой логин!',
+                        type              : 'warning',
+                        showConfirmButton : true,
+                        timer             : 2000
+                    });
+                }
             });
             return false;
         },
