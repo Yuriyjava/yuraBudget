@@ -98,6 +98,6 @@ app.get('/libs/*', function (req, resp) {
     });
 });
 
-app.listen(44206, function () {
+app.listen(8080, function () {
     console.log('server start')
 });
