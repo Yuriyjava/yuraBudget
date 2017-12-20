@@ -1,3 +1,4 @@
+import swal from 'sweetalert2'
 function Grid() {
 
     var self       = this;
@@ -82,15 +83,14 @@ function Grid() {
             $.get("/getData").done(function (response) {
                 var _response = JSON.parse(response);
                 if (_response.data) {
-                    debugger
                     var model = JSON.parse(_response.data);
-                    name =  _response.name;
+                    name      = _response.name;
                     dataGrid.data(model);
                     self.grid = gridEl.kendoGrid({
                         theme      : "material",
                         toolbar    : [
                             {
-                                template : '<span class="nameSpan" >Добрый день '+name+'!</span>'
+                                template : '<span class="nameSpan" >Добрый день ' + name + '!</span>'
                             },
                             {
                                 name : "create",
@@ -190,12 +190,18 @@ function Grid() {
 
                             }
                         },
-                        saveChanges : function (e) {
-                            var model = e.sender.dataSource.data().toJSON();
+                        saveChanges : function (e, callback) {
+                            var model = self.grid.dataSource.data().toJSON();
                             $.post("/saveData", {
                                 data : JSON.stringify(model)
                             }).done(function (data) {
-                                alert("Данные сохранены успешно!")
+                                swal({
+                                    title             : 'Сохранено!',
+                                    text              : 'Данные сохранены успешно!',
+                                    type              : 'success',
+                                    showConfirmButton : false,
+                                    timer             : 1500
+                                });
                             });
                         },
                         change      : function () {
@@ -218,10 +224,47 @@ function Grid() {
     self.view = new View();
 
     function logout() {
-        $.get('/signout').done(function () {
-            alert("Всего наилучшего!");
-            window.location.replace("/");
-        })
+        swal({
+            title              : 'Сохранить данные?',
+            text               : "You won't be able to revert this!",
+            type               : 'warning',
+            showCancelButton   : true,
+            confirmButtonColor : '#3085d6',
+            cancelButtonColor  : '#d33',
+            confirmButtonText  : 'Да, сохранить и выйти!',
+            cancelButtonText   : 'Нет, выйти без сохранения!',
+            confirmButtonClass : 'btn btn-success',
+            cancelButtonClass  : 'btn btn-danger',
+            buttonsStyling     : false,
+            reverseButtons     : true
+        }).then((result) => {
+            if (result.value) {
+                self.view.grid.saveChanges();
+                setTimeout(function () {
+                    $.get('/signout').done(function () {
+                        window.location.replace("/");
+                    });
+                }, 1000);
+                // result.dismiss can be 'cancel', 'overlay',
+                // 'close', and 'timer'
+            } else if (result.dismiss === 'cancel') {
+
+                swal(
+                    'Cancelled',
+                    'Your imaginary file is safe :)',
+                    'error'
+                )
+                setTimeout(function () {
+                    $.get('/signout').done(function () {
+                        window.location.replace("/");
+                    });
+                }, 1000);
+            }
+        });
+        /* $.get('/signout').done(function () {
+         alert("Всего наилучшего!");
+         window.location.replace("/");
+         })*/
     };
 
     function dateEditor(container, options) {
