@@ -34,6 +34,9 @@ app.use(session({
     store: new MongoStore({
         mongooseConnection: db
     }),
+    genid: function(req) {
+        return genuuid() ;// use UUIDs for session IDs
+    },
     resave: false,
     saveUninitialized: true
 }));

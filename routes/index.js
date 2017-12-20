@@ -136,6 +136,7 @@ module.exports = function(passport){
 	/* Handle Logout */
 	router.get('/signout', function(req, res) {
 		req.logout();
+        res.clearCookie('connect.sid', { path: '/' });
 		res.redirect('/');
 	});
 
